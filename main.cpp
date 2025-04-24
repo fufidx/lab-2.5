@@ -51,7 +51,8 @@ PitanieStrategy *CreatePitanieStrategy(PitanieEnum tipPitanie)
 
 class Connector
 {
-
+private:
+    PitanieStrategy *kakPit;
 
 protected:
 
@@ -71,7 +72,7 @@ public:
     virtual void Connect() = 0;
     virtual void TransferData() = 0;
     virtual void ChargeDevice() = 0;
-    void SetPitanie(PitanieEnumStrategy *tipPitanie) { PitanieEnum = tipPitanie; }
+    void SetPitanie(PitanieStrategy *tipPitanie) { kakPit = tipPitanie; }
 };
 
 Connector::Connector(int pins, int power, bool reversible) : pinCount(pins), maxPower(power), reversee(reversible)
@@ -86,7 +87,7 @@ Connector::~Connector()
 class USBC : public Connector
 {
 public:
-    USBC() : Connector(24, 240, 1){}
+    USBC() : Connector(24, 240, 1){ SetPitanie(CreatePitanieStrategy(PitanieEnum::blok_pitaniya));}
 
     void Connect()
     {
@@ -106,7 +107,7 @@ public:
 class Lightning : public Connector
 {
 public:
-    Lightning() : Connector(8, 20, 1){}
+    Lightning() : Connector(8, 20, 1){SetPitanie(CreatePitanieStrategy(PitanieEnum::powerbank));}
 
     void Connect()
     {
@@ -126,7 +127,7 @@ public:
 class microUSB : public Connector
 {
 public:
-    microUSB() : Connector(5, 9, 0){}
+    microUSB() : Connector(5, 9, 0){SetPitanie(CreatePitanieStrategy(PitanieEnum::prikurivatel));}
 
     void Connect()
     {
