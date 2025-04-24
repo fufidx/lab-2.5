@@ -6,6 +6,49 @@
 
 using namespace std;
 
+enum class PitanieEnum : int
+{
+  blok_pitaniya,
+  powerbank,
+  prikurivatel,
+
+  None
+};
+
+class PitanieStrategy
+{
+public:
+  virtual ~PitanieStrategy() {}
+  virtual void Pit() = 0;
+};
+
+class blok_pitaniyaStrategy : public PitanieStrategy
+{
+  void Pit() { cout << "zaryad ot bloka pitaniya"; }
+};
+
+class powerbankStrategy : public PitanieStrategy
+{
+  void Pit() { cout << "zaryad ot powerbanka"; }
+};
+
+class prikurivatelStrategy : public PitanieStrategy
+{
+  void Pit() { cout << "zaryad ot prikurivatela"; }
+};
+
+PitanieStrategy *CreatePitanieStrategy(PitanieEnum tipPitanie)
+{
+  switch(tipPitanie)
+  {
+    case PitanieEnum::blok_pitaniya: return new blok_pitaniyaStrategy;
+    case PitanieEnum::powerbank: return new powerbankStrategy;
+    case PitanieEnum::prikurivatel: return new powerbankStrategy;
+    default: return nullptr;
+  }
+}
+
+
 class Connector
 {
 
@@ -28,6 +71,7 @@ public:
     virtual void Connect() = 0;
     virtual void TransferData() = 0;
     virtual void ChargeDevice() = 0;
+    void SetPitanie(PitanieEnumStrategy *tipPitanie) { PitanieEnum = tipPitanie; }
 };
 
 Connector::Connector(int pins, int power, bool reversible) : pinCount(pins), maxPower(power), reversee(reversible)
