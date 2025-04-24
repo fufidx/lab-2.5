@@ -43,7 +43,7 @@ PitanieStrategy *CreatePitanieStrategy(PitanieEnum tipPitanie)
   {
     case PitanieEnum::blok_pitaniya: return new blok_pitaniyaStrategy;
     case PitanieEnum::powerbank: return new powerbankStrategy;
-    case PitanieEnum::prikurivatel: return new powerbankStrategy;
+    case PitanieEnum::prikurivatel: return new prikurivatelStrategy;
     default: return nullptr;
   }
 }
@@ -53,6 +53,19 @@ class Connector
 {
 private:
     PitanieStrategy *kakPit;
+
+     void DoPitanieUsingStrategy()
+    {
+      if(kakPit == nullptr)
+      {
+        cout << "Do nothing!";
+        return;
+      }
+      else
+      {
+        kakPit->Pit();
+      }
+    }
 
 protected:
 
@@ -72,7 +85,13 @@ public:
     virtual void Connect() = 0;
     virtual void TransferData() = 0;
     virtual void ChargeDevice() = 0;
+
     void SetPitanie(PitanieStrategy *tipPitanie) { kakPit = tipPitanie; }
+
+    void Pitanie()
+    {
+        DoPitanieUsingStrategy();
+    }
 };
 
 Connector::Connector(int pins, int power, bool reversible) : pinCount(pins), maxPower(power), reversee(reversible)
@@ -142,6 +161,7 @@ public:
         cout << "microUSB charging at " << maxPower << "V." << endl;
     }
 
+
 };
 
 enum class ConnectorType : int
@@ -178,6 +198,8 @@ void ConnectAll(Iterator<Connector*> *it)
     {
         Connector *currentConnector = it->GetCurrent();
         currentConnector->Connect();
+        currentConnector->Pitanie();
+        cout<<endl;
     }
 }
 
